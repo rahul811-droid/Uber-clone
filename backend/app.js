@@ -2,8 +2,10 @@ import express from 'express';
 import connectDB from './config/db.js';
 import cors from 'cors';
 import dotenv from 'dotenv';
-import authRoutes from './routes/user.route.js';
 import cookieParser from 'cookie-parser';
+
+import authRoutes from './routes/user.route.js';
+import captainRoutes from './routes/captain.route.js';
 
 dotenv.config();
 const app = express();
@@ -15,5 +17,6 @@ connectDB();
 
 
 app.use('/api/v1/auth',authRoutes);
+app.use('/api/v1/captain',captainRoutes);
 
 export default app;
