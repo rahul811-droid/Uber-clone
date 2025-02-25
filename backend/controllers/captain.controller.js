@@ -1,51 +1,55 @@
 import captainModel from "../models/captain.model.js";
 import jwt from "jsonwebtoken";
 import bcrypt from "bcrypt";
+import { CLIENT_RENEG_LIMIT } from "tls";
 
 export const createCaptain = async (req, res) => {
   try {
     const {
-      fullName,
+      firstName,
       lastName,
       email,
       password,
-      color,
-      plateNumber,
-      capacity,
-      vehicleType,
+      vehicle,  
+      location,
     } = req.body;
+
     if (
-      !fullName ||
+      !firstName ||
       !lastName ||
       !email ||
       !password ||
-      !color ||
-      !plateNumber ||
-      !capacity ||
-      !vehicleType
+      !vehicle?.color ||
+      !vehicle?.plateNumber ||
+      !vehicle?.capacity ||
+      !vehicle?.vehicleType ||
+      !location?.latitude ||
+      !location?.longitude
     ) {
       return res.status(400).json({ message: "All fields are required" });
     }
 
+
     const captainExists = await captainModel.findOne({ email: req.body.email });
 
     if (captainExists) {
-      return res.status(400).json({ message: "captain already exists" });
+      return res.status(400).json({ message: "Captain already exists" });
     }
-    const hashPassword = await User.hashPassword(password);
+
+    const hashPassword = await captainModel.hashPassword(password);
+
     const captain = new captainModel({
-      fullName: req.body.fullName,
-      lastName: req.body.lastName,
-      email: req.body.email,
-      password: req.body.password,
-      vehicle: req.body.vehicle,
-      location: req.body.location,
+      firstName,
+      lastName,
+      email,
+      password: hashPassword,
+      vehicle,
+      location,
     });
 
     const newCaptain = await captain.save();
-    res
-      .status(201)
-      .json({ message: "captain account created successfully", newCaptain });
+
+    res.status(201).json({ message: "Captain account created successfully", newCaptain });
   } catch (error) {
     res.status(400).json({ message: error.message });
   }
