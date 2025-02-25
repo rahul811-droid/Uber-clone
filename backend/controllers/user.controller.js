@@ -1,5 +1,9 @@
 import User from "../models/user.models.js";
 import BlackListToken from "../models/blackListToken.js";
+
+
+
+
 export const register = async (req, res, next) => {
   const { firstName, lastName, email, password } = req.body;
   console.log(req.body);
@@ -56,6 +60,7 @@ export const login = async (req, res, next) => {
 };
 
 export const getUserProfile = async (req, res, next) => {
+  console.log(req.user);
   res.status(200).json(req.user);
 }
 
